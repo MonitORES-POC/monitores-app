@@ -1,0 +1,48 @@
+.user-name {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.01em;
+    text-align: center;
+    color: #43436B;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .user-desc {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0;
+    text-align: center;
+    color: #A1A1B5;
+  }
+  .user-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    margin-bottom: 0.5rem;
+  }
+  .img-wrap {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+  }
+  .nav-link {
+    color: #A1A1B5;
+  }
+  .nav-link.active-link {
+    color: #087fba;
+  }
+
+  .mat-sidenav {
+      width: 15%;
+  }
+
+  .mat-sidenav-container {
+      height: 100%;
+  }
+

@@ -1,0 +1,31 @@
+<app-toolbar (toggleSidenav)="sidenav.toggle()" *ngIf="user"></app-toolbar> 
+<mat-sidenav-container >
+    <mat-sidenav #sidenav [opened]="user !== null" mode="side">
+      <mat-nav-list>
+  
+        <div class="user-wrap">
+          <div class="img-wrap">
+            <img width="60" height="60" src="../../assets/avatar.png" alt="user-logo">
+          </div>
+          <h3 class="user-name">{{userName}}</h3>
+          <p class="user-desc">{{userDescription}}</p>
+        </div>
+
+        <mat-divider></mat-divider>
+        <a class="nav-link"
+        *ngFor="let link of links"
+          mat-list-item
+          [routerLink]="[link.route]"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{exact: true}">
+          <mat-icon matListIcon> {{ link.icon }} </mat-icon>
+          {{link.title}}
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content >
+
+        <router-outlet></router-outlet>
+
+    </mat-sidenav-content>
+</mat-sidenav-container>

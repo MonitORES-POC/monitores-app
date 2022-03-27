@@ -1,0 +1,9 @@
+<!-- <app-pgu-search></app-pgu-search> -->
+<mat-selection-list #pguList [multiple]="false" [(ngModel)]="selectedPgu" [compareWith]="comparePGU" (ngModelChange)="changePGU($event)">
+  <mat-list-option *ngFor="let pgu of pgus" [value]="pgu">
+    {{ pgu.owner }}
+    <!-- <button class="delete" title="delete pgu"
+      (click)="delete(pgu)">x</button> -->
+  </mat-list-option>
+</mat-selection-list>
+<button mat-stroked-button routerLink="/pgu-detail/-100">Add PGU</button>

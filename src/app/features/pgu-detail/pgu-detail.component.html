@@ -1,0 +1,29 @@
+<div *ngIf="pgu">
+    <h2>{{ getTitle() | uppercase }} Details</h2>
+    <h3>{{pgu.owner}}</h3>
+    <div *ngIf="isUpdate"><span>id: </span>{{ pgu.id }}</div>
+    <div>
+      <label for="pgu-owner">PGU owner: </label>
+      <input id="pgu-owner" [(ngModel)]="pgu.owner" placeholder="owner" />
+    </div>
+    <div>
+      <label for="pgu-productionTypeId">PGU Production type: </label>
+      <input id="pgu-productionTypeId" [(ngModel)]="pgu.sourceTypeId" placeholder="productionTypeId" />
+    </div>
+    <div>
+      <label for="pgu-statusId">PGU Status: </label>
+      <input id="pgu-statusId" [(ngModel)]="pgu.statusId" placeholder="statusId" />
+    </div>
+    <div>
+      <label for="pgu-contractPower">PGU contract power: </label>
+      <input id="pgu-contractPower" [(ngModel)]="pgu.contractPower" placeholder="contractPower" />
+    </div>
+    <div>
+      <label for="pgu-installedPower">PGU installed power: </label>
+      <input id="pgu-installedPower" [(ngModel)]="pgu.installedPower" placeholder="installedPower" />
+    </div>
+
+  <!-- <button (click)="save()">save</button>
+  <button (click)="delete()" *ngIf="isUpdate">delete</button>
+  <button (click)="goBack()">go back</button> -->
+</div>
