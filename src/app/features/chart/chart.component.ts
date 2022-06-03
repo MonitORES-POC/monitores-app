@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { WebSocketService } from '@app/_services/web-socket.service';
 import { EChartsOption } from 'echarts';
 
 interface DataItem {
@@ -15,23 +16,34 @@ export class ChartComponent implements OnInit, OnDestroy {
   chartOption: any;
   updateOptions: any;
 
-  private oneDay = 24 * 3600 * 1000;
+  private oneMinute = 60 * 1000;
   private now!: Date;
-  private value!: number;
   private data!: any[];
   private timer: any;
 
-  constructor() { }
+  constructor(private webSocketService: WebSocketService) { }
 
   ngOnInit(): void {
-    // generate some random testing data:
     this.data = [];
-    this.now = new Date(1997, 9, 3);
-    this.value = Math.random() * 1000;
+    this.now = new Date();
+    this.now = new Date(this.now.getTime() - 503*this.oneMinute);
 
-    for (let i = 0; i < 1000; i++) {
-      this.data.push(this.randomData());
+    for (let i = 0; i < 500; i++) {
+      this.data.push(this.generateZeros());
     }
+    this.webSocketService.outEven.subscribe(res => {
+      let chartDate = new Date(res.timeStamp);
+      this.data.shift();
+      this.data.push({name: chartDate.toString(), value: [chartDate.getTime(), res.measuredPower]});
+      // update series data:
+      this.updateOptions = {
+        series: [{
+          data: this.data
+        }]
+      };
+    });
+    
+    
 
     // initialize chart options:
     this.chartOption = {
@@ -52,7 +64,7 @@ export class ChartComponent implements OnInit, OnDestroy {
         formatter: (params) => {
           params = params[0];
           const date = new Date(params.name);
-          return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+          return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + date.getHours() + 'h' + date.getMinutes() + ' : ' + params.value[1];
         },
         axisPointer: {
           animation: false
@@ -72,7 +84,7 @@ export class ChartComponent implements OnInit, OnDestroy {
         }
       },
       series: [{
-        name: 'Mocking Data',
+        name: 'PGU Measures',
         type: 'line',
         showSymbol: false,
         areaStyle: {},
@@ -80,35 +92,19 @@ export class ChartComponent implements OnInit, OnDestroy {
         data: this.data
       }]
     };
-
-    // Mock dynamic data:
-    this.timer = setInterval(() => {
-      for (let i = 0; i < 5; i++) {
-        this.data.shift();
-        this.data.push(this.randomData());
-      }
-
-      // update series data:
-      this.updateOptions = {
-        series: [{
-          data: this.data
-        }]
-      };
-    }, 1000);
   }
 
   ngOnDestroy() {
     clearInterval(this.timer);
   }
 
-  randomData() {
-    this.now = new Date(this.now.getTime() + this.oneDay);
-    this.value = this.value + Math.random() * 21 - 10;
+  generateZeros() {
+    this.now = new Date(this.now.getTime() + this.oneMinute);
     return {
       name: this.now.toString(),
       value: [
-        [this.now.getFullYear(), this.now.getMonth() + 1, this.now.getDate()].join('/'),
-        Math.round(this.value)
+        this.now.getTime(),
+        0
       ]
     };
   }
