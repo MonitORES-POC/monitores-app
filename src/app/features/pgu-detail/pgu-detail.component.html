@@ -1,29 +1,42 @@
 <div *ngIf="pgu">
     <h2>{{ getTitle() | uppercase }} Details</h2>
-    <h3>{{pgu.owner}}</h3>
-    <div *ngIf="isUpdate"><span>id: </span>{{ pgu.id }}</div>
+    <div>
+      <label for="pgu-id">PGU Id: </label>
+      <input *ngIf="!isDisplayOnly" id="pgu-id" [(ngModel)]="pgu.id" placeholder="id" />
+      <div *ngIf="isDisplayOnly"> {{pgu.id}} </div>
+    </div>
     <div>
       <label for="pgu-owner">PGU owner: </label>
-      <input id="pgu-owner" [(ngModel)]="pgu.owner" placeholder="owner" />
+      <input *ngIf="!isDisplayOnly" id="pgu-owner" [(ngModel)]="pgu.owner" placeholder="owner" />
+      <div *ngIf="isDisplayOnly"> {{pgu.owner}} </div>
     </div>
     <div>
       <label for="pgu-productionTypeId">PGU Production type: </label>
-      <input id="pgu-productionTypeId" [(ngModel)]="pgu.sourceTypeId" placeholder="productionTypeId" />
+      <input *ngIf="!isDisplayOnly" id="pgu-productionTypeId" [(ngModel)]="pgu.sourceTypeId" placeholder="productionTypeId" />
+      <div *ngIf="isDisplayOnly"> {{pgu.sourceTypeId}} </div>
     </div>
     <div>
       <label for="pgu-statusId">PGU Status: </label>
-      <input id="pgu-statusId" [(ngModel)]="pgu.statusId" placeholder="statusId" />
+      <input *ngIf="!isDisplayOnly" id="pgu-statusId" [(ngModel)]="pgu.statusId" placeholder="statusId" />
+      <div *ngIf="isDisplayOnly"> {{pgu.statusId}} </div>
     </div>
     <div>
       <label for="pgu-contractPower">PGU contract power: </label>
-      <input id="pgu-contractPower" [(ngModel)]="pgu.contractPower" placeholder="contractPower" />
+      <input *ngIf="!isDisplayOnly" id="pgu-contractPower" [(ngModel)]="pgu.contractPower" placeholder="contractPower" />
+      <div *ngIf="isDisplayOnly"> {{pgu.contractPower}} </div>
     </div>
     <div>
       <label for="pgu-installedPower">PGU installed power: </label>
-      <input id="pgu-installedPower" [(ngModel)]="pgu.installedPower" placeholder="installedPower" />
+      <input *ngIf="!isDisplayOnly" id="pgu-installedPower" [(ngModel)]="pgu.installedPower" placeholder="installedPower" />
+      <div *ngIf="isDisplayOnly"> {{pgu.installedPower}} </div>
+    </div>
+    <div>
+      <label for="pgu-amplificationFactor">PGU amplification factor: </label>
+      <input *ngIf="!isDisplayOnly" id="pgu-amplificationFactor" [(ngModel)]="pgu.amplificationFactor" placeholder="amplificationFactor" />
+      <div *ngIf="isDisplayOnly"> {{pgu.amplificationFactor}} </div>
     </div>
 
-  <!-- <button (click)="save()">save</button>
-  <button (click)="delete()" *ngIf="isUpdate">delete</button>
-  <button (click)="goBack()">go back</button> -->
+  <button *ngIf="!isDisplayOnly" (click)="save()">save</button>
+  <!-- <button (click)="delete()" *ngIf="isUpdate">delete</button> -->
+  <button *ngIf="!isDisplayOnly" (click)="goBack()">go back</button>
 </div>

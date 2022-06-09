@@ -35,13 +35,13 @@ export class PguListComponent implements OnInit {
   } */
 
   getPGUs(): void {
-    this.pguService.getPGUs().subscribe(pgus => this.pgus = pgus);
+    this.pguService.getPGUs().subscribe(pgus => {this.pgus = pgus; console.log(this.pgus[0])});
   }
 
-  delete(pgu: PGU): void {
+  /* delete(pgu: PGU): void {
     this.pgus = this.pgus.filter(p => p !== pgu);
     this.pguService.deletePGU(pgu.id).subscribe();
-  }
+  } */
 
   getSelectedPgu(): PGU {
     return this.selectedPgu!;

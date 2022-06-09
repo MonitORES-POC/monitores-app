@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { AccountService } from '@app/_services';
 
 @Component({
   selector: 'app-toolbar',
@@ -8,8 +9,12 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 export class ToolbarComponent implements OnInit {
   title = 'ORES Monitoring App';
   @Output() toggleSidenav: EventEmitter<any> = new EventEmitter();
-  constructor() { }
+  constructor(private accountService: AccountService) { }
 
   ngOnInit(): void {
+  }
+
+  logout() {
+    this.accountService.logout();
   }
 }

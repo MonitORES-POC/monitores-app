@@ -14,6 +14,8 @@ export class PguDetailComponent implements OnInit {
   
   isUpdate?: boolean;
 
+  @Input() isDisplayOnly: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private pguService: PguService,
@@ -23,7 +25,16 @@ export class PguDetailComponent implements OnInit {
 
   ngOnInit(): void {
     //this.getPGU(this._pguId);
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if(this.isDisplayOnly) {
+      this.pguService.currentPgu.subscribe(pgu => {
+        if(pgu[0] === undefined) {
+          this.pgu = null;
+        } else {
+          this.pgu = pgu[0];
+        }
+      });
+    } else {
+      const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id != -100) {
       //this.getPGU(id);
       this.pguService.currentPgu.subscribe(pgu => this.pgu = pgu);
@@ -32,6 +43,8 @@ export class PguDetailComponent implements OnInit {
       this.pgu = {} as PGU;
       this.isUpdate = false;
     }
+    }
+    
   }
 
   getPGU(id: number): void {
@@ -52,11 +65,11 @@ export class PguDetailComponent implements OnInit {
     }
   }
 
-  delete(): void {
+  /* delete(): void {
     if(this.isUpdate) {
       this.pguService.deletePGU(this.pgu!.id).subscribe(() => this.goBack());
     }
-  }
+  } */
 
   getTitle(): string {
 

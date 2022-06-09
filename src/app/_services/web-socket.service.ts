@@ -6,24 +6,34 @@ import { Socket } from 'ngx-socket-io';
   providedIn: 'root',
 })
 export class WebSocketService extends Socket {
-  @Output() outEven: EventEmitter<MeasureEvent> = new EventEmitter();
+  @Output() outUpdateEvent: EventEmitter<MeasureEvent> = new EventEmitter();
+  @Output() outBufferEvent: EventEmitter<MeasureEvent> = new EventEmitter();
   constructor() {
     super({
       url: 'ws://localhost:3000',
-      /* options: {
+      options: {
         query: {
-          pguId: "1",
+          id: '1', // cookiees or argument
         },
-      }, */
+      },
     });
-    this.listen();
+    this.listenPguUpdate();
   }
 
-  listen = () => {
-    this.ioSocket.on('measure_event', (res) => {
+  listenPguUpdate() {
+    this.ioSocket.on('update_state_event', (res) => {
       console.log(JSON.stringify(res));
-      this.outEven.emit(res)});
-  };
+      this.outUpdateEvent.emit(res);
+    });
+  }
+
+  getCurrentBuffer(payload = {}) {
+    this.ioSocket.emit('get_buffer', payload);
+    this.ioSocket.on('send_buffer', (res) => {
+      console.log(JSON.stringify(res));
+      this.outBufferEvent.emit(res);
+    });
+  }
 
   // manage connection lost
 }

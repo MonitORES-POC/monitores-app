@@ -10,17 +10,10 @@ import { environment } from '@environments/environment';
   providedIn: 'root',
 })
 export class PguService {
-  private pgusUrl = `${environment.apiUrl}${environment.smartContractQueryApi}`;
-  private PGUMonitorContractMethod = {
-    createPGU: 'MonitorPGUContract:CreatePGU',
-    getPGU: 'MonitorPGUContract:GetPGU',
-    deletePGU: 'MonitorPGUContract:DeletePGU',
-    getAllPGUs: 'MonitorPGUContract:GetAllPGUs'
-  }
+  private pgusUrl = `${environment.apiUrl}/pgus`;
   public currentPgu = new BehaviorSubject<PGU>(null);
-
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+    headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': 'http://localhost:4200' }),
   };
 
   constructor(
@@ -29,14 +22,9 @@ export class PguService {
   ) {}
 
   getPGUs(): Observable<PGU[]>{
-    var body = { // TODO refactor all smart contracts bodies
-      method: this.PGUMonitorContractMethod.getAllPGUs,
-      args: []
-    }
-    return this.http.post<PGU[]>(this.pgusUrl, body).pipe(
-      map(response => {
-          let pgus: PGU[] = response['response'].map(pgu => this.pguFromResponse(pgu));
-          return pgus;
+    return this.http.get<PGU[]>(this.pgusUrl, this.httpOptions ).pipe(
+      map(pgus => {
+        return pgus.map(x => this.pguFromResponse(x))
       }),
      // tap((_) => this.log('fetched PGUs')),
       catchError(this.handleError<PGU[]>('getPGUs', []))
@@ -44,31 +32,15 @@ export class PguService {
   }
 
   getPGU(id: Number): Observable<PGU> {
-    var body = { // TODO refactor all smart contracts bodies
-      method: this.PGUMonitorContractMethod.getPGU,
-      args: [
-        id
-      ]
-    }
-    return this.http.post<PGU>(this.pgusUrl, JSON.stringify(body)).pipe(
-      map(response => this.pguFromResponse(response['response'])),
-     // tap((_) => this.log(`fetched pgu id=${id}`)),
-      catchError(this.handleError<PGU>(`getPGU id=${id}`))
-    );
+    return this.http.get<PGU>(this.pgusUrl+'/'+id, this.httpOptions).pipe(
+      map(pgu => this.pguFromResponse(pgu)),
+      // tap((_) => this.log('fetched PGUs')),
+       catchError(this.handleError<PGU>('getPGU', null))
+     );
   }
 
   addPGU(pgu: PGU): Observable<any> {
-    var body = { // TODO refactor all smart contracts bodies
-      method: this.PGUMonitorContractMethod.createPGU,
-      args: [
-        pgu.id,
-        pgu.owner,
-        pgu.sourceTypeId,
-        pgu.installedPower,
-        pgu.contractPower
-      ]
-    }
-    return this.http.post<any>(this.pgusUrl, JSON.stringify(body), this.httpOptions).pipe(
+    return this.http.post<any>(this.pgusUrl, JSON.stringify({newPgu: pgu}), this.httpOptions).pipe(
      // tap((_) => this.log(`added pgu id=${pgu.id}`)),
       catchError(this.handleError<any>('addPGU'))
     );
@@ -81,7 +53,7 @@ export class PguService {
     );
   } */
 
-  deletePGU(id: number): Observable<any> {
+  /* deletePGU(id: number): Observable<any> {
     var body = { // TODO refactor all smart contracts bodies
       method: this.PGUMonitorContractMethod.deletePGU,
       args: [
@@ -92,7 +64,7 @@ export class PguService {
      // tap((_) => this.log(`deleted pgu id=${id}`)),
       catchError(this.handleError<any>('deletePGU'))
     );
-  }
+  } */
 
   setCurrentPGU(newPgu : PGU) {
     this.currentPgu.next(newPgu);
@@ -125,12 +97,12 @@ export class PguService {
    * @param result - optional value to return as the observable result
    */
   private pguFromResponse(pguResponse): PGU {
-    var pgu:PGU = new PGU();
-    pgu.id = pguResponse['ID'];
-    pgu.contractPower = pguResponse['ContractPower'];
+    var pgu:PGU = new PGU() !!A ENLEVEr et update PGU model!!
+    pgu.id = pguResponse['ID']
+    pgu.contractPower = pguResponse['ContractPower']
     pgu.installedPower = pguResponse['InstalledPower'];
     pgu.owner = pguResponse['Owner'];
-    pgu.sourceTypeId = pguResponse['SourceTypeId'];
+    pgu.sourceTypeId = pguResponse['SourceTypeid'];
     pgu.statusId = pguResponse['StatusId'];
     return pgu;
   }

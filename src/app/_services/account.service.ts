@@ -20,6 +20,9 @@ export class AccountService {
     public userSubject: BehaviorSubject<User>; // private
     public user: Observable<User>;
     private key: string|null;
+    httpOptions = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': 'http://localhost:4200' }),
+      };
 
     constructor(
         private router: Router,
@@ -35,13 +38,8 @@ export class AccountService {
     }
 
     login(id, secret): Observable<Token> {
-        let headers = new HttpHeaders()
- 
-        headers=headers.append('content-type','text/plain')
-        headers=headers.append('Autorization','Bearer')
-        headers=headers.append('Access-Control-Allow-Origin','http://localhost:4200')
-        var body = JSON.stringify({id: id, secret: secret});
-        return this.http.post<Token>(`${environment.apiUrl}/user/enroll`, body, {headers: headers});
+        var body = JSON.stringify({username: id, password: secret});
+        return this.http.post<Token>(`${environment.apiUrl}/auth/login`, body, this.httpOptions);
     }
 
     logout() {
@@ -51,7 +49,7 @@ export class AccountService {
         this.router.navigate(['/account/login']);
     }
 
-    register(user: User) {
+    createUser(user: User) {
         return this.http.post(`${environment.apiUrl}/user/register`, user);
     }
 
@@ -65,32 +63,5 @@ export class AccountService {
 
     /* getById(id: string) {
         return this.http.get<User>(`${environment.apiUrl}/user/${id}`);
-    } */
-
-    /* update(id, params) {
-        return this.http.put(`${environment.apiUrl}/user/${id}`, params)
-            .pipe(map(x => {
-                // update stored user if the logged in user updated their own record
-                if (id == this.userValue.id) {
-                    // update local storage
-                    const user = { ...this.userValue, ...params };
-                    localStorage.setItem('user', JSON.stringify(user));
-
-                    // publish updated user to subscribers
-                    this.userSubject.next(user);
-                }
-                return x;
-            }));
-    }
-
-    delete(id: string) {
-        return this.http.delete(`${environment.apiUrl}/user/${id}`)
-            .pipe(map(x => {
-                // auto logout if the logged in user deleted their own record
-                if (id == this.userValue.id) {
-                    this.logout();
-                }
-                return x;
-            }));
     } */
 }

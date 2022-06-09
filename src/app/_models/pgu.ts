@@ -5,4 +5,5 @@ export class PGU {
     statusId: number; 
     installedPower: number;
     contractPower: number;
+    amplificationFactor: number;
 }

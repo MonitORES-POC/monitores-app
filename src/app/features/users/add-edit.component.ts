@@ -69,7 +69,7 @@ export class AddEditComponent implements OnInit {
     }
 
     private createUser() {
-        this.accountService.register(this.form.value)
+        this.accountService.createUser(this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {

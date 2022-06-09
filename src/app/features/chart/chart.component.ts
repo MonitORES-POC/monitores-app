@@ -31,7 +31,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     for (let i = 0; i < 500; i++) {
       this.data.push(this.generateZeros());
     }
-    this.webSocketService.outEven.subscribe(res => {
+    this.webSocketService.outUpdateEvent.subscribe(res => {
       let chartDate = new Date(res.timeStamp);
       this.data.shift();
       this.data.push({name: chartDate.toString(), value: [chartDate.getTime(), res.measuredPower]});

@@ -40,7 +40,7 @@
             <div>
               <app-pgu-list *ngIf="card.chart === 'pgu-list'"></app-pgu-list>
               <app-chart *ngIf="card.chart === 'chart'"></app-chart>
-              <app-pgu-detail *ngIf="card.chart === 'pgu-detail'"></app-pgu-detail>
+              <app-pgu-detail *ngIf="card.chart === 'pgu-detail'" [isDisplayOnly]="true"></app-pgu-detail>
               <!-- <app-doughnut-chart [query]="card.query" *ngIf="card.chart === 'doughnut'"></app-doughnut-chart> -->
             </div>
           </mat-card-content>
