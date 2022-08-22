@@ -8,7 +8,7 @@ import { PguService } from 'src/app/_services';
 @Component({
   selector: 'app-pgu-list',
   templateUrl: './pgu-list.component.html',
-  styleUrls: ['./pgu-list.component.css'],
+  styleUrls: ['./pgu-list.component.css']
 })
 export class PguListComponent implements OnInit {
   //public selectedId: number; // set default
@@ -30,30 +30,17 @@ export class PguListComponent implements OnInit {
       .pipe(
         concatMap((pgus) => {
           this.pguService.setPgus(pgus);
-          //this.selectedPgu = pgus[0];
-          //this.pguService.setCurrentPGU(this.pgus[0]);
           return this.pguService.currentPgu;
         })
       )
       .subscribe((pgu) => {
         this.selectedPgu = pgu;
-        //console.log(pgu);
         if (this.selectedPgu === undefined && this.selectedPgu === null) {
           this.pguService.setCurrentPGU(this.pgus[0]);
-          this.reloadRoute();
+          //this.reloadRoute();
         }
       });
   }
-
-  /* onSelect(pgu: PGU): void {
-    this.selectedPgu = pgu;
-    this.messageService.add('PguListComponent: Selected hero id=${pgu.id}')
-  } */
-
-  /* delete(pgu: PGU): void {
-    this.pgus = this.pgus.filter(p => p !== pgu);
-    this.pguService.deletePGU(pgu.id).subscribe();
-  } */
 
   getSelectedPgu(): PGU {
     return this.selectedPgu!;

@@ -5,11 +5,6 @@ import { WebSocketService } from '@app/_services/web-socket.service';
 import { EChartsOption } from 'echarts';
 import { concatMap, Subject, takeUntil } from 'rxjs';
 
-interface DataItem {
-  name: string;
-  value: [string, number];
-}
-
 @Component({
   selector: 'app-chart',
   templateUrl: './chart.component.html',
@@ -37,7 +32,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         concatMap((updateDtoList) => {
-          this.measureData = updateDtoList.map((u) => {
+          this.measureData = updateDtoList?.map((u) => {
             return {
               name: u.measure.timeStamp,
               value: [
@@ -64,6 +59,19 @@ export class ChartComponent implements OnInit, OnDestroy {
             }
             return null;
           });
+          let markLineAlert = {};
+          if(updateDtoList[updateDtoList.length - 1].statusId === 2) {
+            markLineAlert = {
+              silent: true,
+              lineStyle: {
+                color: '#333'
+              },
+              data: [
+                {
+                  yAxis: this.pguService.currentPgu.value.contractPower
+                }]
+            }
+          }
           this.updateOptions = {
             color:
               AppConstants.ChartColor[
@@ -72,6 +80,7 @@ export class ChartComponent implements OnInit, OnDestroy {
             series: [
               {
                 data: this.measureData,
+                markline: markLineAlert,
               },
               {
                 data: this.constraintData,
@@ -111,12 +120,26 @@ export class ChartComponent implements OnInit, OnDestroy {
             this.constraintData.shift();
             this.constraintData.push(null);
           }
+          let markLineAlert = {};
+          if(res.statusId === 2) {
+            markLineAlert = {
+              silent: true,
+              lineStyle: {
+                color: '#333'
+              },
+              data: [
+                {
+                  yAxis: this.pguService.currentPgu.value.contractPower
+                }]
+            }
+          }
           // update series data:
           this.updateOptions = {
             color: AppConstants.ChartColor[res.statusId],
             series: [
               {
                 data: this.measureData,
+                markline: markLineAlert,
               },
               {
                 data: this.constraintData,
@@ -185,23 +208,6 @@ export class ChartComponent implements OnInit, OnDestroy {
           },
         },
       },
-      /* visualMap: {
-        show: false,
-        dimension: 0,
-        seriesIndex: 1,
-        pieces: [
-          {
-            min: 0,
-            max: this.chartConstraintDate !== undefined && this.chartConstraintDate !== null  ? this.chartConstraintDate.getTime() : 1659046658337,
-            //lte: this.chartConstraintDate ? this.chartConstraintDate.getTime() : 1000000000000,
-            color: 'yellow'
-          },
-          {
-            min: this.chartConstraintDate !== undefined && this.chartConstraintDate !== null ? this.chartConstraintDate.getTime() : 1659046658337,
-            color: 'red'
-          },
-        ]
-      }, */
       series: [
         {
           name: 'PGU Measures',

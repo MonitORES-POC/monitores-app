@@ -1,8 +1,6 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { PGU, PguStateUpdateDto } from '@app/_models';
-import { number } from 'echarts';
 import { Socket } from 'ngx-socket-io';
-import { PguService } from './pgu.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,10 +30,8 @@ export class WebSocketService extends Socket {
   getCurrentBuffer(id: number) {
     this.ioSocket.emit('get_buffer', {id: id});
     this.ioSocket.on('send_buffer', (res) => {
-      //console.log(JSON.stringify(res));
       this.outBufferEvent.emit(JSON.parse(res));
     });
   }
 
-  // manage connection lost
 }

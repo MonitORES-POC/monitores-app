@@ -1,21 +1,7 @@
 
   
 <div class="grid-container">
-  <!-- <div class="kpi-wrap">
-    <mat-grid-list [cols]="cols" rowHeight="131px">
-      <mat-grid-tile *ngFor="let card of KPICards" [colspan]="1" [rowspan]="1">
-        <app-kpi-card class="kpi-card"
-                      [query]="card.query"
-                      [title]="card.title"
-                      [duration]="card.duration"
-                      [progress]="card.progress"
-                      [difference]="card.difference"
-        ></app-kpi-card>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </div> -->
   <div>
-    <!-- <p>Option {{selectedPgu.id}}  {{selectedPgu.name}}</p> -->
     <mat-grid-list [cols]="chartCols" rowHeight="100px">
       <mat-grid-tile *ngFor="let card of cards" [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card class="dashboard-card">
@@ -24,14 +10,13 @@
               <h3>{{card.title}}</h3>
             </mat-card-title>
           </mat-card-header>
-          <!--<hr>-->
           <mat-card-content class="dashboard-card-content">
             <div class="h-full">
               <app-pgu-list *ngIf="card.chart === 'pgu-list'"></app-pgu-list>
               <app-chart *ngIf="card.chart === 'chart'"></app-chart>
               <app-pgu-detail *ngIf="card.chart === 'pgu-detail'" [isDisplayOnly]="true"></app-pgu-detail>
               <app-pgu-constraint class="h-full" *ngIf="card.chart === 'pgu-constraint'"></app-pgu-constraint>
-              <app-pgu-penalties class="h-full" *ngIf="card.chart === 'pgu-penalties'"></app-pgu-penalties>
+              <app-pgu-penalties class="h-full" *ngIf="card.chart === 'pgu-infractions'"></app-pgu-penalties>
             </div>
           </mat-card-content>
         </mat-card>

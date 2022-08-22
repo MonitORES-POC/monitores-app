@@ -64,8 +64,4 @@ export class AccountService {
             return users;
         }));
     }
-
-    /* getById(id: string) {
-        return this.http.get<User>(`${environment.apiUrl}/user/${id}`);
-    } */
 }

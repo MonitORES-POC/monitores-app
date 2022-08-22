@@ -49,7 +49,6 @@ export class PguDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //this.getPGU(this._pguId);
     if (this.isDisplayOnly) {
       this.pguService.currentPgu.asObservable().subscribe((pgu) => {
         console.log('hey')
@@ -93,7 +92,6 @@ export class PguDetailComponent implements OnInit {
     } else {
       const id = Number(this.route.snapshot.paramMap.get('id'));
       if (id != -100) {
-        //this.getPGU(id);
         this.pguService.currentPgu.subscribe((pgu) => (this.pgu = pgu));
         this.isUpdate = true;
       } else {

@@ -7,7 +7,7 @@ import { AccountService } from '@app/_services';
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent implements OnInit {
-  title = 'ORES Monitoring App';
+  title = 'MonitORES';
   @Output() toggleSidenav: EventEmitter<any> = new EventEmitter();
   constructor(private accountService: AccountService) { }
 

@@ -17,33 +17,20 @@ export interface Card {
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  /* selectedPgu!: PGU;
-  pgus: PGU[] = []; */
+
   cards: Card[] = [
     { title: 'PGU List', chart: 'pgu-list', cols: 1, rows: 5 },
     { title: 'Energy Production', chart: 'chart', cols: 4, rows: 5 },
     { title: 'PGU Details', chart: 'pgu-detail', cols: 2, rows: 4 },
-    { title: 'PGU Penalties', chart: 'pgu-penalties', cols: 2, rows: 4 },
+    { title: 'PGU Infractions', chart: 'pgu-infractions', cols: 2, rows: 4 },
     { title: 'PGU Constraint', chart: 'pgu-constraint', cols: 1, rows: 4 },
   ];
   @ViewChild(PguListComponent) pguList!: PguListComponent;
 
   chartCols: number = 5;
   constructor(private pguService: PguService) {
-    /* this.pguService.getPGU(2).subscribe((pgu) => (this.selectedPgu = pgu)); */
   }
-
   ngOnInit(): void {
-    /* this.getPGUs(); */
   }
 
- /*  getPGUs(): void {
-    this.pguService
-      .getPGUs()
-      .subscribe((pgus) => (this.pgus = pgus));
-  }
- */
-/*   updateSelect(): void {
-    this.selectedPgu = this.pguList.getSelectedPgu();
-  } */
 }

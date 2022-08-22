@@ -12,8 +12,6 @@ import {MatListModule} from '@angular/material/list';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './_services/in-memory-data.service';
 import { HttpClientModule, HTTP_INTERCEPTORS  } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
