@@ -1,42 +1,199 @@
-<div *ngIf="pgu">
-    <h2>{{ getTitle() | uppercase }} Details</h2>
-    <div>
-      <label for="pgu-id">PGU Id: </label>
-      <input *ngIf="!isDisplayOnly" id="pgu-id" [(ngModel)]="pgu.id" placeholder="id" />
-      <div *ngIf="isDisplayOnly"> {{pgu.id}} </div>
-    </div>
-    <div>
-      <label for="pgu-owner">PGU owner: </label>
-      <input *ngIf="!isDisplayOnly" id="pgu-owner" [(ngModel)]="pgu.owner" placeholder="owner" />
-      <div *ngIf="isDisplayOnly"> {{pgu.owner}} </div>
-    </div>
-    <div>
-      <label for="pgu-productionTypeId">PGU Production type: </label>
-      <input *ngIf="!isDisplayOnly" id="pgu-productionTypeId" [(ngModel)]="pgu.sourceTypeId" placeholder="productionTypeId" />
-      <div *ngIf="isDisplayOnly"> {{pgu.sourceTypeId}} </div>
-    </div>
-    <div>
-      <label for="pgu-statusId">PGU Status: </label>
-      <input *ngIf="!isDisplayOnly" id="pgu-statusId" [(ngModel)]="pgu.statusId" placeholder="statusId" />
-      <div *ngIf="isDisplayOnly"> {{pgu.statusId}} </div>
-    </div>
-    <div>
-      <label for="pgu-contractPower">PGU contract power: </label>
-      <input *ngIf="!isDisplayOnly" id="pgu-contractPower" [(ngModel)]="pgu.contractPower" placeholder="contractPower" />
-      <div *ngIf="isDisplayOnly"> {{pgu.contractPower}} </div>
-    </div>
-    <div>
-      <label for="pgu-installedPower">PGU installed power: </label>
-      <input *ngIf="!isDisplayOnly" id="pgu-installedPower" [(ngModel)]="pgu.installedPower" placeholder="installedPower" />
-      <div *ngIf="isDisplayOnly"> {{pgu.installedPower}} </div>
-    </div>
-    <div>
-      <label for="pgu-amplificationFactor">PGU amplification factor: </label>
-      <input *ngIf="!isDisplayOnly" id="pgu-amplificationFactor" [(ngModel)]="pgu.amplificationFactor" placeholder="amplificationFactor" />
-      <div *ngIf="isDisplayOnly"> {{pgu.amplificationFactor}} </div>
+<div
+  *ngIf="pgu"
+  [ngClass]="{ 'max-w-xs': isDisplayOnly, 'max-w-md': !isDisplayOnly }"
+>
+  <form
+    [formGroup]="pguForm"
+    (ngSubmit)="save()"
+    class="gird grid-cols-2 gap-1 items-start px-6 w-full"
+  >
+    <div class="flex flex-row justify-start items-center w-full">
+      <h2 *ngIf="!isDisplayOnly" class="font-sans col-span-2 pt-4 text-indigo-600 font-black">
+        {{ getTitle() | uppercase }}
+      </h2>
+      <div
+        *ngIf="
+          isDisplayOnly &&
+          onBoardingPercentage !== undefined &&
+          onBoardingPercentage !== null
+        "
+        class="font-sans w-fit h-fit flex flex-row justify-evenly items-center"
+        [ngClass]="{
+          'text-green-500': onBoardingPercentage === 1,
+          'text-yellow-500': onBoardingPercentage < 1
+        }"
+      >
+        <span class="px-3"> Onboarding in progress</span>
+        <div
+          class="w-4 h-5 px-1 rounded-full border-t-[3px] border-b-[3px] animate-spin"
+          [ngClass]="{
+            'animate-ping border-green-500 bg-green-500 ':
+              onBoardingPercentage === 1,
+            'animate-spin border-yellow-500 bg-transparent ':
+              onBoardingPercentage < 1
+          }"
+        ></div>
+        <span class="px-3"> {{ onBoardingPercentage | percent }} </span>
+      </div>
     </div>
 
-  <button *ngIf="!isDisplayOnly" (click)="save()">save</button>
-  <!-- <button (click)="delete()" *ngIf="isUpdate">delete</button> -->
-  <button *ngIf="!isDisplayOnly" (click)="goBack()">go back</button>
+    <div class="pgu-detail-field-box">
+      <label for="pgu-id" class="pgu-detail-label">Id </label>
+      <input
+        class="w-1/2 shadow-sm rounded-md pl-2"
+        id="pgu-id"
+        *ngIf="!isDisplayOnly"
+        placeholder="id"
+        formControlName="id"
+      />
+      <div *ngIf="isDisplayOnly" class="pgu-detail-field">{{ pgu.id }}</div>
+    </div>
+    <div class="pgu-detail-field-box" *ngIf="isDisplayOnly">
+      <div
+        class="font-sans text-lg font-bold"
+        [ngClass]="{
+          'text-yellow-500': pgu.statusId === 0,
+          'text-green-500': pgu.statusId === 1,
+          'text-orange-500': pgu.statusId === 2,
+          'text-red-500': pgu.statusId === 4 || pgu.statusId === 3 
+        }"
+        >Status
+      </div>
+      <div
+        class="font-sans text-base font-normal"
+        [ngClass]="{
+          'text-yellow-500': pgu.statusId === 0,
+          'text-green-500': pgu.statusId === 1,
+          'text-orange-500': pgu.statusId === 2,
+          'text-red-500': pgu.statusId === 4 || pgu.statusId === 3 
+        }"
+      >
+        {{ status }}
+      </div>
+    </div>
+    <div class="pgu-detail-field-box">
+      <label for="pgu-owner" class="pgu-detail-label">Owner </label>
+      <input
+        class="w-1/2 shadow-sm rounded-md pl-2"
+        *ngIf="!isDisplayOnly"
+        id="pgu-owner"
+        placeholder="owner"
+        formControlName="owner"
+      />
+      <div *ngIf="isDisplayOnly" class="pgu-detail-field">{{ pgu.owner }}</div>
+    </div>
+    <div class="pgu-detail-field-box">
+      <label for="pgu-sourceTypeId" class="pgu-detail-label">Source type</label>
+      <select
+        class="w-1/2 shadow-sm rounded-md pl-2"
+        *ngIf="!isDisplayOnly"
+        id="pgu-sourceTypeId"
+        formControlName="sourceTypeId"
+      >
+        <option value="" disabled [selected]="true" hidden>
+          Select a source
+        </option>
+        <option value="1">Wind</option>
+        <option value="2">Solar</option>
+      </select>
+      <div *ngIf="isDisplayOnly" class="pgu-detail-field">
+        {{ sourceType }}
+      </div>
+    </div>
+    
+    <div class="pgu-detail-field-box">
+      <label for="pgu-contractPower" class="pgu-detail-label"
+        >Contract power
+      </label>
+      <input
+        class="w-1/2 shadow-sm rounded-md pl-2"
+        *ngIf="!isDisplayOnly"
+        type="number"
+        id="pgu-contractPower"
+        placeholder="contractPower"
+        formControlName="contractPower"
+      />
+      <div *ngIf="isDisplayOnly" class="pgu-detail-field">
+        {{ pgu.contractPower }}
+      </div>
+    </div>
+    <div class="pgu-detail-field-box">
+      <label for="pgu-installedPower" class="pgu-detail-label"
+        >Installed power
+      </label>
+      <input
+        class="w-1/2 shadow-sm rounded-md pl-2"
+        *ngIf="!isDisplayOnly"
+        type="number"
+        id="pgu-installedPower"
+        placeholder="installedPower"
+        formControlName="installedPower"
+      />
+      <div *ngIf="isDisplayOnly" class="pgu-detail-field">
+        {{ pgu.installedPower }}
+      </div>
+    </div>
+    <div class="pgu-detail-field-box">
+      <label for="pgu-amplificationFactor" class="pgu-detail-label"
+        >Amplification factor</label
+      >
+      <input
+        class="w-1/2 shadow-sm rounded-md pl-2"
+        *ngIf="!isDisplayOnly"
+        type="number"
+        id="pgu-amplificationFactor"
+        placeholder="amplificationFactor"
+        formControlName="amplificationFactor"
+        value="1"
+      />
+      <div *ngIf="isDisplayOnly" class="pgu-detail-field">
+        {{ pgu.amplificationFactor }}
+      </div>
+    </div>
+
+    <div *ngIf="!isDisplayOnly" class="pgu-detail-field-box">
+      <legend class="pgu-detail-label w-1/2">PGU behaviour</legend>
+
+      <div class="w-1/2 flex flex-row items-center justify-start gap-2">
+        <input
+          type="checkbox"
+          id="is-respectful"
+          formControlName="isRespectful"
+          class="cursor-pointer"
+        />
+        <label for="is-respectful" class="m-0">Respectful</label>
+      </div>
+    </div>
+
+    <div *ngIf="!isDisplayOnly" class="pgu-detail-field-box">
+      <legend class="pgu-detail-label w-1/2">PGU simulation source</legend>
+
+      <div class="w-1/2 flex flex-row items-center justify-start gap-2">
+        <input
+          type="checkbox"
+          id="from-historical-data"
+          formControlName="fromHistoricalData"
+          class="cursor-pointer"
+        />
+        <label for="from-historical-data" class="m-0">From historical data (from API if set to false)</label>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="!pguForm.valid"
+      *ngIf="!isDisplayOnly"
+      class="w-40 bg-indigo-700 hover:bg-indigo-500 transition-all disabled:bg-slate-400 disabled:cursor-not-allowed ease-in duration-200 rounded-2xl text-white text-lg font-semibold uppercase font-sans m-2 p-2"
+    >
+      save
+    </button>
+
+    <button
+      *ngIf="!isDisplayOnly"
+      (click)="goBack()"
+      class="w-40 bg-indigo-700 hover:bg-indigo-500 transition-all ease-in duration-200 rounded-2xl text-white text-lg font-semibold uppercase font-sans m-2 p-2"
+    >
+      go back
+    </button>
+  </form>
 </div>

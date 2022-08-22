@@ -23,11 +23,12 @@ import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 import { AlertComponent } from './_components';
 import { PguDetailComponent } from './features/pgu-detail/pgu-detail.component';
 import { PguListComponent } from './features/pgu-list/pgu-list.component';
-import { PguSearchComponent } from './features/pgu-search/pgu-search.component';
 import { ChartComponent } from './features/chart/chart.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { NavbarComponent } from './features/navbar/navbar.component';
 import { ToolbarComponent } from './features/toolbar/toolbar.component';
+import { PguConstraintComponent } from './features/pgu-constraint/pgu-constraint.component';
+import { PguPenaltiesComponent } from './features/pgu-penalties/pgu-penalties.component';
 
 @NgModule({
   declarations: [
@@ -38,13 +39,15 @@ import { ToolbarComponent } from './features/toolbar/toolbar.component';
     AlertComponent,
     PguDetailComponent,
     PguListComponent,
-    PguSearchComponent,
     ChartComponent,
-    SettingsComponent
+    SettingsComponent,
+    PguConstraintComponent,
+    PguPenaltiesComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
     /* HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {

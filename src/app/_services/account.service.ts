@@ -7,6 +7,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { User } from '@app/_models';
 import { stringify } from 'querystring';
+import { PguService } from './pgu.service';
 
 export interface Token {
     token: string;
@@ -25,6 +26,7 @@ export class AccountService {
       };
 
     constructor(
+        private pguService: PguService,
         private router: Router,
         private http: HttpClient
     ) {
@@ -44,7 +46,9 @@ export class AccountService {
 
     logout() {
         // remove user from local storage and set current user to null
+        this.pguService.currentPgu.complete();
         localStorage.removeItem('user');
+        localStorage.removeItem('currentPgu');
         this.userSubject.next(null);
         this.router.navigate(['/account/login']);
     }

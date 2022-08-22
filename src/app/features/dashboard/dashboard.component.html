@@ -16,32 +16,22 @@
   </div> -->
   <div>
     <!-- <p>Option {{selectedPgu.id}}  {{selectedPgu.name}}</p> -->
-    <mat-grid-list [cols]="chartCols" rowHeight="510px">
+    <mat-grid-list [cols]="chartCols" rowHeight="100px">
       <mat-grid-tile *ngFor="let card of cards" [colspan]="card.cols" [rowspan]="card.rows">
         <mat-card class="dashboard-card">
           <mat-card-header class="dashboard-card__header">
             <mat-card-title>
               <h3>{{card.title}}</h3>
-             <!--  <div *ngIf="card.hasDatePick">
-                <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu" xPosition="before">
-                  <button mat-menu-item  (click)="changeDateRange('This year')">This year</button>
-                  <button mat-menu-item  (click)="changeDateRange('Last year')">Last year</button>
-                  <button mat-menu-item  (click)="changeDateRange('This quarter')">This quarter</button>
-                  <button mat-menu-item  (click)="changeDateRange('Last quarter')">Last quarter</button>
-                </mat-menu>
-              </div> -->
             </mat-card-title>
           </mat-card-header>
           <!--<hr>-->
           <mat-card-content class="dashboard-card-content">
-            <div>
+            <div class="h-full">
               <app-pgu-list *ngIf="card.chart === 'pgu-list'"></app-pgu-list>
               <app-chart *ngIf="card.chart === 'chart'"></app-chart>
               <app-pgu-detail *ngIf="card.chart === 'pgu-detail'" [isDisplayOnly]="true"></app-pgu-detail>
-              <!-- <app-doughnut-chart [query]="card.query" *ngIf="card.chart === 'doughnut'"></app-doughnut-chart> -->
+              <app-pgu-constraint class="h-full" *ngIf="card.chart === 'pgu-constraint'"></app-pgu-constraint>
+              <app-pgu-penalties class="h-full" *ngIf="card.chart === 'pgu-penalties'"></app-pgu-penalties>
             </div>
           </mat-card-content>
         </mat-card>

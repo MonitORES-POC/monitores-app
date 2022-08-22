@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError, timer } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
-import { PGU } from '@app/_models';
+import { catchError, delayWhen, map, mergeMap, retryWhen, tap } from 'rxjs/operators';
+import { Constraint, PGU } from '@app/_models';
 import { environment } from '@environments/environment';
+import { WebSocketService } from './web-socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,21 +13,45 @@ import { environment } from '@environments/environment';
 export class PguService {
   private pgusUrl = `${environment.apiUrl}/pgus`;
   public currentPgu = new BehaviorSubject<PGU>(null);
+  private pguListSubject = new BehaviorSubject<PGU[]|undefined>([]);
+  public pguList$ = this.pguListSubject.asObservable();
+
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': 'http://localhost:4200' }),
   };
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private ws: WebSocketService
     //private messageService: MessageService
-  ) {}
+  ) {
+    const localStoragePgu = localStorage.getItem('currentPgu');
+    if(localStoragePgu !==undefined && localStoragePgu !== null) {
+      const currentPguLocalStorage:PGU = JSON.parse(localStoragePgu);
+      this.setCurrentPGU(currentPguLocalStorage);
+    }
+  }
 
   getPGUs(): Observable<PGU[]>{
     return this.http.get<PGU[]>(this.pgusUrl, this.httpOptions ).pipe(
-      map(pgus => {
-        return pgus.map(x => this.pguFromResponse(x))
-      }),
-     // tap((_) => this.log('fetched PGUs')),
+    /*   mergeMap(pgus => {
+        //throw error for demonstration
+        if(pgus !== null && pgus !== undefined && this.pguListSubject.value !== null && this.pguListSubject.value !== undefined ) {
+          if (this.pguListSubject.value.length > pgus.length) {
+            return throwError(() => new Error('pgu list'));
+          }
+          this.setPgus(pgus);
+        }
+        return of(pgus.map(x => this.pguFromResponse(x)));
+      }), */
+      //retry 2 times on error
+      retryWhen(errors =>
+        errors.pipe(
+          //log error message
+          tap((_) => console.log(`Problem with pgu list`)),
+          //restart in 6 seconds
+          delayWhen((_)  => timer(1500))
+        )),
       catchError(this.handleError<PGU[]>('getPGUs', []))
     );
   }
@@ -39,13 +64,33 @@ export class PguService {
      );
   }
 
-  addPGU(pgu: PGU): Observable<any> {
-    return this.http.post<any>(this.pgusUrl, JSON.stringify({newPgu: pgu}), this.httpOptions).pipe(
+  addPGU(pgu: PGU, isRespectful: boolean,fromHistoricalData: boolean): Observable<any> {
+    return this.http.post<any>(this.pgusUrl, JSON.stringify({newPgu: pgu, isRespectful: isRespectful, fromHistoricalData: fromHistoricalData}), this.httpOptions).pipe(
      // tap((_) => this.log(`added pgu id=${pgu.id}`)),
       catchError(this.handleError<any>('addPGU'))
     );
   }
 
+  submitConstraint(newConstraint: Constraint, id: number): Observable<any> {
+    return this.http.post<any>(this.pgusUrl+'/constraint/'+id, JSON.stringify(newConstraint), this.httpOptions).pipe(
+     // tap((_) => this.log(`added pgu id=${pgu.id}`)),
+      catchError(this.handleError<any>('addPGU'))
+    );
+  }
+
+  declareAlert(id: Number): Observable<any> {
+    return this.http.get<any>(this.pgusUrl+'/alert/'+id, this.httpOptions).pipe(
+      // tap((_) => this.log('fetched PGUs')),
+       catchError(this.handleError<PGU>('getPGU', null))
+     );
+  }
+
+  declareUrgency(id: Number): Observable<any> {
+    return this.http.get<any>(this.pgusUrl+'/urgency/'+id, this.httpOptions).pipe(
+      // tap((_) => this.log('fetched PGUs')),
+       catchError(this.handleError<PGU>('getPGU', null))
+     );
+  }
   /* updatePGU(pgu: PGU): Observable<any> {
     return this.http.put(this.pgusUrl, pgu, this.httpOptions).pipe(
      // tap((_) => this.log(`updated pgu id=${pgu.id}`)),
@@ -67,7 +112,18 @@ export class PguService {
   } */
 
   setCurrentPGU(newPgu : PGU) {
+    localStorage.setItem('currentPgu', JSON.stringify(newPgu));
+    console.log('new pgu');
     this.currentPgu.next(newPgu);
+    this.ws.getCurrentBuffer(newPgu.id);
+  }
+
+  setPgus(newPgus : PGU[]) {
+    this.pguListSubject.next(newPgus);
+  }
+
+  get pgusListValue() {
+    return this.pguListSubject.value;
   }
 
   /* GET pgus whose name contains search term */
@@ -97,14 +153,7 @@ export class PguService {
    * @param result - optional value to return as the observable result
    */
   private pguFromResponse(pguResponse): PGU {
-    var pgu:PGU = new PGU() !!A ENLEVEr et update PGU model!!
-    pgu.id = pguResponse['ID']
-    pgu.contractPower = pguResponse['ContractPower']
-    pgu.installedPower = pguResponse['InstalledPower'];
-    pgu.owner = pguResponse['Owner'];
-    pgu.sourceTypeId = pguResponse['SourceTypeid'];
-    pgu.statusId = pguResponse['StatusId'];
-    return pgu;
+    return pguResponse;
   }
 
   /**

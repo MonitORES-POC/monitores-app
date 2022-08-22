@@ -1,12 +1,12 @@
-<!-- <app-pgu-search></app-pgu-search> -->
-<mat-selection-list #pguList [multiple]="false" [(ngModel)]="selectedPgu" [compareWith]="comparePGU" (ngModelChange)="changePGU($event)">
-  <mat-list-option *ngFor="let pgu of pgus" [value]="pgu">
-    {{ pgu.owner }}
-    <!-- <button class="delete" title="delete pgu"
-      (click)="delete(pgu)">x</button> -->
+<!-- <mat-selection-list #pguList [multiple]="false" [(ngModel)]="selectedPgu" [compareWith]="comparePGU">
+  <mat-list-option *ngFor="let pgu of pgus" [value]="pgu" (click)="changePGU(pgu)">
+    {{ pgu?.owner }}
   </mat-list-option>
-</mat-selection-list>
-<!-- <ul>
-  <li *ngFor="let pgu of pgus">{{selectedPgu.owner}}</li>
-</ul> -->
+</mat-selection-list> -->
+<ul class="flex flex-col items-center justify-start gap-1 w-full px-1">
+  <li (click)="changePGU(pgu)" *ngFor="let pgu of pgus | async" class="w-full rounded-xl py-3 font-sans font-medium text-sm hover:bg-gray-200 cursor-pointer" [ngClass]="{'bg-gray-300 hover:bg-gray-300': pgu?.id === selectedPgu?.id}">
+    PGU {{ pgu?.id }}
+  </li>
+</ul>
 <button mat-stroked-button routerLink="/pgu-detail/-100">Add PGU</button>
+

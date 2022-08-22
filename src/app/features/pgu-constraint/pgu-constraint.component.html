@@ -1,0 +1,194 @@
+<div class="flex flex-col justify-between items-center p-2 h-[85%]" *ngIf="currentPgu !== undefined && currentPgu !==null">
+  <div class="flex flex-col justify-start gap-4 w-full h-fit">
+    <div class="flex flex-row justify-between items-center w-full h-full">
+      <form [formGroup]="constraintForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-2 justify-center items-start w-full h-full">
+        <label
+          for="powerLimit"
+          class="font-sans text-sm tracking-wider text-left w-full font-bold text-gray-800 mb-0"
+          >Limit
+        </label>
+        <div class="flex flex-row justify-start items-center w-[100%] h-fit">
+            <input
+          id="powerLimit"
+          formControlName="powerLimit"
+          type="number"
+          placeholder="power limit"
+          class="border-2 border-slate-200 rounded-lg pl-2 shrink w-[100%]"
+          />
+          <span class="font-sans text-xs font-bold text-gray-800 mb-0 pl-3">Kw</span>
+          </div>
+        <button type="submit" [disabled]="!constraintForm.valid"
+          class="w-20 ml-auto bg-indigo-500 hover:bg-indigo-300 self-center disabled:bg-slate-400 transition-all ease-in duration-200 rounded-2xl text-white text-xs font-semibold uppercase font-sans p-2"
+        >
+          Submit
+        </button>
+        
+      </form>
+    </div>
+    <div *ngIf="latestConstraint !== undefined" class="flex flex-row items-end justify-between border-t-2 border-gray-100 pt-1">
+        <div class="font-bold font-sans">
+            Last constraint
+        </div>
+        <div>
+            {{latestConstraint?.powerLimit | number : '1.2-2'}}
+        </div>
+        <div class="w-32">
+            {{latestConstraint?.applicationTime | date : 'short'}}
+        </div>
+    </div>
+  </div>
+
+  <div class="flex flex-row justify-between items-end w-full">
+    <button
+      (click)="isAlertOpened = !isAlertOpened"
+      class="w-24 bg-orange-500 hover:bg-orange-300 transition-all ease-in duration-200 rounded-2xl text-white text-sm font-semibold uppercase font-sans m-2 p-2"
+    >
+      Alert
+    </button>
+    <button
+      (click)="isUrgencyOpened = !isUrgencyOpened"
+      class="w-24 bg-red-700 hover:bg-red-500 transition-all ease-in duration-200 rounded-2xl text-white text-sm font-semibold uppercase font-sans m-2 p-2"
+    >
+      Urgency
+    </button>
+  </div>
+</div>
+
+<div
+  *ngIf="isAlertOpened || isUrgencyOpened"
+  class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-20"
+></div>
+
+<div class="fixed z-30 inset-0 overflow-y-auto h-fit" *ngIf="isAlertOpened">
+  <div
+    class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0"
+  >
+    <div
+      class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all h-fit sm:my-4 sm:max-w-lg sm:w-full"
+    >
+      <div class="bg-white px-4 pt-5 pb-0 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
+          >
+            <!-- Heroicon name: outline/exclamation -->
+            <svg
+              class="h-6 w-6 text-orange-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <div class="text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900 text-left"
+              id="modal-title"
+            >
+              Declare alert for PGU {{currentPgu.id}}
+            </h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500 text-justify">
+                Are you sure you want to declare alert mode for this PGU? It will 
+                constrained it to the contract power.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="bg-gray-50 px-4 pb-3 sm:px-6 sm:flex sm:flex-row-reverse items-end"
+      >
+        <button
+        (click)="declareAlert()"
+          type="button"
+          class="w-full h-fit inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:ml-3 sm:w-auto sm:text-sm"
+        >
+          Declare Alert
+        </button>
+        <button
+          (click)="isAlertOpened = !isAlertOpened"
+          type="button"
+          class="mt-3 h-fit w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fixed z-30 inset-0 overflow-y-auto h-fit" *ngIf="isUrgencyOpened">
+  <div
+    class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0"
+  >
+    <div
+      class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all h-fit sm:my-4 sm:max-w-lg sm:w-full"
+    >
+      <div class="bg-white px-4 pt-5 pb-0 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
+          >
+            <!-- Heroicon name: outline/exclamation -->
+            <svg
+              class="h-6 w-6 text-red-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <div class="text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3
+              class="text-lg leading-6 font-medium text-gray-900 text-left"
+              id="modal-title"
+            >
+            Declare urgency for PGU {{currentPgu.id}}
+          </h3>
+          <div class="mt-2">
+            <p class="text-sm text-gray-500 text-justify">
+                Are you sure you want to declare urgency mode for this PGU? It will 
+                constrained it to the 0.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="bg-gray-50 px-4 pb-3 sm:px-6 sm:flex sm:flex-row-reverse items-end"
+      >
+        <button
+        (click)="declareUrgency()"
+          type="button"
+          class="w-full h-fit inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+        >
+          Declare Urgency
+        </button>
+        <button
+          (click)="isUrgencyOpened = !isUrgencyOpened"
+          type="button"
+          class="mt-3 h-fit w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

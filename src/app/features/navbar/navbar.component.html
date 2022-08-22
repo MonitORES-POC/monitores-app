@@ -1,6 +1,6 @@
 <app-toolbar (toggleSidenav)="sidenav.toggle()" *ngIf="user"></app-toolbar> 
 <mat-sidenav-container >
-    <mat-sidenav #sidenav [opened]="user !== null" mode="side">
+    <mat-sidenav #sidenav [opened]="user !== null" mode="side" class="z-10">
       <mat-nav-list>
   
         <div class="user-wrap">

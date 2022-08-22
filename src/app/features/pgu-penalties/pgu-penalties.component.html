@@ -1,0 +1,16 @@
+<ul>
+    <li> 
+        <div class="flex flex-row justify-between items-center text-base font-sans font-semibold">
+            <div>Type</div>
+            <div>Count</div>
+            <div>Last Time</div>
+        </div>
+    </li>
+    <li *ngFor="let infr of infractionList | keyvalue" class="py-6"> 
+        <div class="flex flex-row justify-between items-center border-t-2 border-gray-200">
+            <div>{{infr.key}}</div>
+            <div> {{infr.value.count}}</div>
+            <div> {{infr.value.timeStamp | date: 'short'}}</div>
+        </div>
+    </li>
+</ul>

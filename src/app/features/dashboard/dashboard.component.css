@@ -74,4 +74,5 @@ a:hover {
 
 .dashboard-card-content {
   text-align: center;
+  height: 100%;
 }
